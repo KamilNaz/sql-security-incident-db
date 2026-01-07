@@ -1,266 +1,279 @@
-# Security Incident Database & Analytics
+# SQL Security Incident Database
 
-![SQL Server](https://img.shields.io/badge/SQL%20Server-2019%2B-red)
-![T-SQL](https://img.shields.io/badge/T--SQL-Advanced-blue)
+![SQL](https://img.shields.io/badge/SQL-SQL%20Server%20%7C%20MySQL%20%7C%20PostgreSQL-blue)
+![Database](https://img.shields.io/badge/Database-Design-orange)
+![Analytics](https://img.shields.io/badge/Analytics-T--SQL-green)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Overview
 
-Comprehensive relational database system for tracking, analyzing, and reporting security incidents across multiple facilities. This project demonstrates advanced SQL skills including database design, stored procedures, views, triggers, and complex analytical queries.
+SQL Server security incident database with comprehensive schema design, ETL procedures, and advanced analytics queries for security operations centers (SOC). This project demonstrates database design, T-SQL programming, and data analytics skills for cybersecurity incident management.
 
 ## Challenge
 
-Design and implement a scalable database solution to track security incidents, enable trend analysis, and provide automated reporting for executive decision-making across multiple installations.
+Design a scalable database system to track, analyze, and report on security incidents across an enterprise environment. Support incident lifecycle management, analyst workload tracking, threat intelligence integration, and trend analysis.
 
 ## Solution
 
-Built enterprise-grade SQL database featuring:
-- **Normalized Schema Design**: Third normal form (3NF) for data integrity
-- **Stored Procedures**: Automated data processing and business logic
-- **Views**: Simplified complex queries for reporting
-- **Triggers**: Automatic logging and data validation
-- **ETL Processes**: Integration with external data sources
+Developed a normalized relational database with:
+- **Comprehensive Schema**: Incidents, analysts, attack patterns, threat intelligence, actions
+- **Advanced Queries**: Trend analysis, MTTD/MTTR calculations, analyst performance metrics
+- **ETL Procedures**: Stored procedures for data processing and reporting
+- **Sample Data**: Ready-to-use demo dataset with 15+ incidents
 
 ## Key Features
 
-- **Multi-Facility Tracking**: Centralized incident management
-- **Automated Reporting**: Weekly executive dashboards
-- **Trend Analysis**: Historical pattern identification
-- **Real-time Alerts**: Critical incident notifications
-- **Audit Trail**: Complete change history tracking
-- **Performance Optimization**: Indexed queries for fast retrieval
+- ✅ **Normalized Schema Design**: 5+ tables with proper relationships
+- ✅ **Incident Lifecycle Tracking**: From detection to resolution
+- ✅ **Analyst Workload Management**: Assignment and performance tracking
+- ✅ **Threat Intelligence Integration**: IOC tracking and correlation
+- ✅ **Trend Analysis Queries**: Time series, severity distribution, attack patterns
+- ✅ **Demo Dataset**: Pre-populated sample incidents for testing
 
 ## Technologies Used
 
-- SQL Server 2019+
+- SQL Server / MySQL / PostgreSQL
 - T-SQL
-- SQL Server Management Studio (SSMS)
-- SQL Server Integration Services (SSIS)
-- SQL Server Reporting Services (SSRS)
-
-## Database Schema
-
-### Core Tables
-
-```sql
--- Incidents: Main incident tracking table
--- Facilities: Installation/location information
--- Categories: Incident classification
--- Personnel: Staff involved in incidents
--- Actions: Remediation steps taken
--- AuditLog: Change tracking
-```
-
-### Entity Relationship Diagram
-
-```
-┌─────────────┐       ┌──────────────┐       ┌─────────────┐
-│  Facilities │◄──────│   Incidents  │──────►│ Categories  │
-└─────────────┘       └──────────────┘       └─────────────┘
-                            │   │
-                            │   └──────────┐
-                            ▼              ▼
-                      ┌──────────┐   ┌─────────┐
-                      │Personnel │   │ Actions │
-                      └──────────┘   └─────────┘
-```
+- Database design (normalization, indexes, foreign keys)
 
 ## Project Structure
 
 ```
 sql-security-incident-db/
 ├── schema/
-│   ├── 01_create_database.sql
-│   ├── 02_create_tables.sql
-│   ├── 03_create_indexes.sql
-│   └── 04_create_constraints.sql
-├── procedures/
-│   ├── sp_CreateIncident.sql
-│   ├── sp_CloseIncident.sql
-│   ├── sp_GenerateReport.sql
-│   └── sp_CalculateTrends.sql
-├── views/
-│   ├── vw_ActiveIncidents.sql
-│   ├── vw_MonthlyStats.sql
-│   └── vw_FacilityDashboard.sql
-├── triggers/
-│   ├── trg_AuditIncidents.sql
-│   └── trg_NotifyCritical.sql
+│   └── 02_create_tables.sql       # Database schema definition
 ├── analytics/
-│   ├── trend_analysis.sql
-│   ├── performance_metrics.sql
-│   └── executive_dashboard.sql
-├── sample_data/
-│   └── insert_sample_data.sql
+│   └── trend_analysis.sql         # Analytics queries (MTTD, trends, metrics)
+├── demo_setup.sql                 # Demo mode - START HERE!
 └── README.md
 ```
 
-## Key Capabilities
+## Installation
 
-### 1. Incident Management
-
-```sql
--- Create new incident with automatic validation
-EXEC sp_CreateIncident
-    @FacilityID = 1,
-    @CategoryID = 3,
-    @Severity = 'High',
-    @Description = 'Unauthorized access attempt detected',
-    @ReportedBy = 'Security Team';
+```bash
+git clone https://github.com/KamilNaz/sql-security-incident-db.git
+cd sql-security-incident-db
 ```
 
-### 2. Trend Analysis
-
+**Database Setup (SQL Server):**
 ```sql
--- Analyze incident trends by category and time
-SELECT *
-FROM vw_MonthlyStats
-WHERE Year = 2024
-ORDER BY Month, IncidentCount DESC;
+CREATE DATABASE SecurityDB;
+GO
+USE SecurityDB;
+GO
 ```
 
-### 3. Executive Reporting
+**Database Setup (MySQL):**
+```sql
+CREATE DATABASE SecurityDB;
+USE SecurityDB;
+```
+
+**Database Setup (PostgreSQL):**
+```sql
+CREATE DATABASE securitydb;
+\c securitydb;
+```
+
+## Quick Start
+
+### Run Demo with Sample Data
+
+**SQL Server:**
+```bash
+sqlcmd -S localhost -d SecurityDB -i demo_setup.sql
+```
+
+**MySQL:**
+```bash
+mysql -u root -p SecurityDB < demo_setup.sql
+```
+
+**PostgreSQL:**
+```bash
+psql -d securitydb -f demo_setup.sql
+```
+
+This will:
+1. Create all database tables (Incidents, Analysts, AttackPatterns, ThreatIntelligence, IncidentActions)
+2. Insert 15 sample security incidents
+3. Insert 3 sample analysts
+4. Insert 5 attack patterns
+5. Insert 5 threat intelligence records
+6. Insert 5 incident actions
+7. Display verification queries
+
+**Expected output:**
+```
+========================================================================
+SQL SECURITY INCIDENT DATABASE - DEMO SETUP
+========================================================================
+
+[*] Creating database schema...
+[+] Schema created successfully
+
+[*] Inserting sample security incident data...
+[+] Inserted 15 sample incidents
+[+] Inserted 3 sample analysts
+[+] Inserted 5 attack patterns
+[+] Inserted 5 threat intelligence records
+[+] Inserted 5 incident action records
+
+[*] Verifying data insertion...
+
+Incident Count by Severity:
+Severity    Count
+---------   -----
+CRITICAL    3
+HIGH        2
+MEDIUM      5
+LOW         5
+
+Incident Count by Status:
+Status           Count
+-------------    -----
+Closed           8
+In Progress      3
+Investigating    2
+Blocked          1
+Contained        1
+
+Analyst Workload:
+AnalystName         ActiveIncidents  TotalAssigned
+-----------------   ---------------  -------------
+Sarah Chen          2                4
+Mike Rodriguez      2                3
+Emily Johnson       2                3
+
+========================================================================
+DEMO SETUP COMPLETE!
+========================================================================
+```
+
+### Run Analytics Queries
+
+After setup, run advanced analytics:
+
+```bash
+sqlcmd -S localhost -d SecurityDB -i analytics/trend_analysis.sql
+```
+
+This includes:
+- Mean Time to Detect (MTTD)
+- Mean Time to Respond (MTTR)
+- Incident trends by day/hour
+- Severity distribution
+- Top attacked assets
+- Analyst performance metrics
+
+## Database Schema
+
+### Main Tables
+
+**Incidents**
+- `IncidentID` (PK)
+- `Timestamp`, `IncidentType`, `Severity`
+- `SourceIP`, `DestinationIP`, `Port`, `Protocol`
+- `Status`, `AssignedAnalyst`
+
+**Analysts**
+- `AnalystID` (PK)
+- `AnalystName`, `Email`, `Department`
+- `ActiveIncidents`
+
+**AttackPatterns**
+- `PatternID` (PK)
+- `PatternName`, `Description`
+- `CommonPorts`, `DetectionRule`
+
+**ThreatIntelligence**
+- `IOC` (PK) - Indicator of Compromise
+- `Type`, `ThreatLevel`, `Source`
+- `FirstSeen`, `LastSeen`, `Active`
+
+**IncidentActions**
+- `ActionID` (PK)
+- `IncidentID` (FK), `Timestamp`
+- `Action`, `PerformedBy`
+
+## Example Queries
+
+### Find Critical Incidents
 
 ```sql
--- Generate comprehensive executive dashboard
-EXEC sp_GenerateExecutiveReport
-    @StartDate = '2024-01-01',
-    @EndDate = '2024-12-31';
+SELECT
+  IncidentID,
+  Timestamp,
+  IncidentType,
+  SourceIP,
+  Status
+FROM Incidents
+WHERE Severity = 'CRITICAL'
+  AND Status != 'Closed'
+ORDER BY Timestamp DESC;
+```
+
+### Analyst Performance
+
+```sql
+SELECT
+  A.AnalystName,
+  COUNT(I.IncidentID) as TotalIncidents,
+  AVG(DATEDIFF(HOUR, I.Timestamp, IA.Timestamp)) as AvgResponseTimeHours
+FROM Analysts A
+JOIN Incidents I ON A.AnalystID = I.AssignedAnalyst
+JOIN IncidentActions IA ON I.IncidentID = IA.IncidentID
+GROUP BY A.AnalystName
+ORDER BY TotalIncidents DESC;
+```
+
+### Incident Trends (Daily)
+
+```sql
+SELECT
+  CAST(Timestamp AS DATE) as Date,
+  COUNT(*) as IncidentCount,
+  SUM(CASE WHEN Severity = 'CRITICAL' THEN 1 ELSE 0 END) as CriticalCount
+FROM Incidents
+WHERE Timestamp >= DATEADD(DAY, -30, GETDATE())
+GROUP BY CAST(Timestamp AS DATE)
+ORDER BY Date DESC;
 ```
 
 ## Impact & Results
 
-### Operational Efficiency
+Demo database metrics:
 
-- **60% reduction** in incident reporting time
-- **Real-time tracking** of all security events
-- **Automated alerts** for critical incidents
-- **Streamlined workflows** through stored procedures
+| Metric | Value |
+|--------|-------|
+| **Total Incidents** | 15 |
+| **Critical Severity** | 3 (20%) |
+| **Avg Response Time** | ~2.5 hours |
+| **Analyst Workload** | 4-5 incidents/analyst |
+| **Incident Types** | 8 unique types |
 
-### Data-Driven Insights
+## Roadmap / Planned Features
 
-- Identified **top 3 incident categories** accounting for 70% of events
-- Discovered **peak incident times** enabling proactive staffing
-- Reduced **average resolution time** by 45%
-- Enabled **predictive maintenance** through pattern recognition
-
-### Business Value
-
-- **Cost Savings**: $150K annually through optimized response
-- **Improved Security**: 35% faster incident response
-- **Better Planning**: Data-driven resource allocation
-- **Compliance**: Complete audit trail for regulatory requirements
-
-## Sample Queries
-
-### Active Incidents by Severity
-
-```sql
-SELECT
-    i.IncidentID,
-    f.FacilityName,
-    c.CategoryName,
-    i.Severity,
-    i.IncidentDate,
-    DATEDIFF(hour, i.IncidentDate, GETDATE()) AS HoursOpen
-FROM Incidents i
-INNER JOIN Facilities f ON i.FacilityID = f.FacilityID
-INNER JOIN Categories c ON i.CategoryID = c.CategoryID
-WHERE i.Status = 'Open'
-ORDER BY
-    CASE i.Severity
-        WHEN 'Critical' THEN 1
-        WHEN 'High' THEN 2
-        WHEN 'Medium' THEN 3
-        WHEN 'Low' THEN 4
-    END,
-    i.IncidentDate;
-```
-
-### Monthly Trend Analysis
-
-```sql
-WITH MonthlyStats AS (
-    SELECT
-        YEAR(IncidentDate) AS Year,
-        MONTH(IncidentDate) AS Month,
-        COUNT(*) AS IncidentCount,
-        AVG(DATEDIFF(hour, IncidentDate, ResolutionDate)) AS AvgResolutionHours
-    FROM Incidents
-    WHERE Status = 'Closed'
-    GROUP BY YEAR(IncidentDate), MONTH(IncidentDate)
-)
-SELECT
-    Year,
-    Month,
-    IncidentCount,
-    AvgResolutionHours,
-    IncidentCount - LAG(IncidentCount) OVER (ORDER BY Year, Month) AS MonthOverMonthChange,
-    CAST(100.0 * (IncidentCount - LAG(IncidentCount) OVER (ORDER BY Year, Month)) /
-         LAG(IncidentCount) OVER (ORDER BY Year, Month) AS DECIMAL(5,2)) AS PercentChange
-FROM MonthlyStats
-ORDER BY Year, Month;
-```
-
-## Performance Optimizations
-
-### Indexing Strategy
-
-- **Clustered Index**: IncidentID (primary key)
-- **Non-Clustered Indexes**:
-  - FacilityID, CategoryID (foreign keys)
-  - IncidentDate (frequent filtering)
-  - Status (active incident queries)
-  - Composite: (FacilityID, IncidentDate) for facility reports
-
-### Query Optimization
-
-- Partitioning by date ranges for historical data
-- Indexed views for frequently accessed aggregations
-- Statistics maintenance for optimal execution plans
-- Query hints for complex analytical queries
-
-## Installation & Setup
-
-```sql
--- 1. Create database
-sqlcmd -S localhost -i schema/01_create_database.sql
-
--- 2. Create tables
-sqlcmd -S localhost -d SecurityIncidents -i schema/02_create_tables.sql
-
--- 3. Create indexes
-sqlcmd -S localhost -d SecurityIncidents -i schema/03_create_indexes.sql
-
--- 4. Create stored procedures
-sqlcmd -S localhost -d SecurityIncidents -i procedures/*.sql
-
--- 5. Load sample data (optional)
-sqlcmd -S localhost -d SecurityIncidents -i sample_data/insert_sample_data.sql
-```
-
-## Security Considerations
-
-- **Role-Based Access Control (RBAC)**: Limited permissions by role
-- **Encryption**: Sensitive data encrypted at rest
-- **Audit Logging**: All changes tracked in AuditLog table
-- **SQL Injection Prevention**: Parameterized queries only
-- **Regular Backups**: Automated daily backups
-
-## Future Enhancements
-
-- Machine learning integration for predictive analytics
-- Power BI dashboard integration
-- Mobile app for field incident reporting
-- Integration with physical security systems
-- Automated incident prioritization
+- [ ] Complete ETL stored procedures
+- [ ] Automated incident enrichment
+- [ ] Integration with SIEM systems
+- [ ] Real-time dashboards (Power BI/Tableau)
+- [ ] Machine learning threat scoring
+- [ ] Compliance reporting (GDPR, SOC 2)
+- [ ] API endpoints for incident management
 
 ## Author
 
 **Kamil Nazaruk**
-- LinkedIn: [kamil-nazaruk](https://www.linkedin.com/in/kamil-nazaruk-56531736a)
-- Portfolio: [kamilnaz.github.io](https://kamilnaz.github.io)
+Data Analyst & Database Design Specialist
+
+- 🔗 LinkedIn: [kamil-nazaruk](https://www.linkedin.com/in/kamil-nazaruk-56531736a)
+- 🌐 Portfolio: [kamilnaz.github.io](https://kamilnaz.github.io)
 
 ## License
 
-MIT License - Educational and portfolio purposes.
+MIT License - This project is open source and available for learning, portfolio, and commercial use.
+
+---
+
+**Note:** This is a demonstration project showcasing SQL and database design skills. For production security incident management, consider enterprise SIEM/SOAR platforms with full automation and compliance features.
