@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Security Incident Database - Interactive Documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/sql.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 4px solid #38bdf8;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header h1 {
+            color: #38bdf8;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 1.2em;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-tab:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 4px solid #38bdf8;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            color: #38bdf8;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .card h3 {
+            color: #10b981;
+            margin: 20px 0 10px 0;
+            font-size: 1.3em;
+        }
+
+        .schema-diagram {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .table-box {
+            background: #1e293b;
+            border: 2px solid #38bdf8;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            display: inline-block;
+            min-width: 250px;
+        }
+
+        .table-box h4 {
+            color: #38bdf8;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 5px;
+        }
+
+        .table-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .table-box li {
+            padding: 4px 0;
+            color: #cbd5e1;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .table-box li.pk {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        .table-box li.fk {
+            color: #22c55e;
+        }
+
+        .code-block {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-header {
+            background: #0f172a;
+            padding: 10px 15px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-title {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #0ea5e9;
+            transform: scale(1.05);
+        }
+
+        pre {
+            margin: 0 !important;
+            border-radius: 0 0 8px 8px !important;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #10b981;
+        }
+
+        .feature-card i {
+            color: #10b981;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h4 {
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #cbd5e1;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .metric-box {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #38bdf8;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            color: #38bdf8;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85em;
+            margin: 2px;
+        }
+
+        .severity-critical { background: #ef4444; color: #fff; }
+        .severity-high { background: #f59e0b; color: #fff; }
+        .severity-medium { background: #fbbf24; color: #000; }
+        .severity-low { background: #22c55e; color: #fff; }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+            border-top: 1px solid #334155;
+            margin-top: 60px;
+        }
+
+        .footer a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #38bdf8;
+            color: #0f172a;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: #0ea5e9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #38bdf8;
+            border: 2px solid #38bdf8;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(56, 189, 248, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-database"></i> SQL Security Incident Database</h1>
+        <p>Comprehensive security incident tracking and analysis system</p>
+    </div>
+
+    <div class="container">
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showTab('overview')">
+                <i class="fas fa-home"></i> Overview
+            </div>
+            <div class="nav-tab" onclick="showTab('schema')">
+                <i class="fas fa-project-diagram"></i> Database Schema
+            </div>
+            <div class="nav-tab" onclick="showTab('queries')">
+                <i class="fas fa-code"></i> Sample Queries
+            </div>
+            <div class="nav-tab" onclick="showTab('analytics')">
+                <i class="fas fa-chart-bar"></i> Analytics Examples
+            </div>
+            <div class="nav-tab" onclick="showTab('setup')">
+                <i class="fas fa-play"></i> Quick Start
+            </div>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="card">
+                <h2><i class="fas fa-info-circle"></i> Project Overview</h2>
+                <p>A comprehensive SQL-based security incident database system designed for Security Operations Centers (SOC) and incident response teams. Built with industry best practices for tracking, analyzing, and reporting security incidents.</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>Incident Management</h4>
+                    <p>Track security incidents with full lifecycle management from detection to resolution.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h4>Analyst Workflows</h4>
+                    <p>Assign incidents to analysts, track workload, and manage team performance.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-fingerprint"></i>
+                    <h4>Threat Intelligence</h4>
+                    <p>Integrate threat indicators (IOCs) from multiple sources for correlation.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Trend Analysis</h4>
+                    <p>Built-in analytics queries for identifying patterns and trends over time.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-database"></i>
+                    <h4>Multi-Platform</h4>
+                    <p>Compatible with SQL Server, MySQL, PostgreSQL, and Oracle databases.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-rocket"></i>
+                    <h4>Demo Mode</h4>
+                    <p>Pre-loaded with sample data for immediate testing and evaluation.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-layer-group"></i> Key Components</h2>
+                <div class="metric-grid">
+                    <div class="metric-box">
+                        <div class="metric-value">5</div>
+                        <div class="metric-label">Core Tables</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value">15+</div>
+                        <div class="metric-label">Sample Incidents</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value">3</div>
+                        <div class="metric-label">SOC Analysts</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value">10+</div>
+                        <div class="metric-label">Analytics Queries</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-exclamation-triangle"></i> Incident Severity Levels</h2>
+                <p>The system supports four severity levels for incident classification:</p>
+                <div style="margin: 20px 0;">
+                    <span class="severity-badge severity-critical">CRITICAL</span>
+                    <span class="severity-badge severity-high">HIGH</span>
+                    <span class="severity-badge severity-medium">MEDIUM</span>
+                    <span class="severity-badge severity-low">LOW</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schema Tab -->
+        <div id="schema" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-project-diagram"></i> Database Schema</h2>
+                <p>The database consists of five main tables designed for comprehensive incident tracking:</p>
+
+                <div class="schema-diagram">
+                    <div class="table-box">
+                        <h4><i class="fas fa-table"></i> Incidents</h4>
+                        <ul>
+                            <li class="pk">🔑 IncidentID (PK)</li>
+                            <li>Timestamp</li>
+                            <li>IncidentType</li>
+                            <li>Severity</li>
+                            <li>SourceIP</li>
+                            <li>DestinationIP</li>
+                            <li>Port</li>
+                            <li>Protocol</li>
+                            <li>Status</li>
+                            <li class="fk">➡️ AssignedAnalyst (FK)</li>
+                        </ul>
+                    </div>
+
+                    <div class="table-box">
+                        <h4><i class="fas fa-table"></i> Analysts</h4>
+                        <ul>
+                            <li class="pk">🔑 AnalystID (PK)</li>
+                            <li>AnalystName</li>
+                            <li>Email</li>
+                            <li>Department</li>
+                            <li>ActiveIncidents</li>
+                        </ul>
+                    </div>
+
+                    <div class="table-box">
+                        <h4><i class="fas fa-table"></i> ThreatIntelligence</h4>
+                        <ul>
+                            <li class="pk">🔑 IOC (PK)</li>
+                            <li>Type (IP/Domain/Hash)</li>
+                            <li>ThreatLevel</li>
+                            <li>Source</li>
+                            <li>FirstSeen</li>
+                            <li>LastSeen</li>
+                            <li>Active</li>
+                        </ul>
+                    </div>
+
+                    <div class="table-box">
+                        <h4><i class="fas fa-table"></i> AttackPatterns</h4>
+                        <ul>
+                            <li class="pk">🔑 PatternID (PK)</li>
+                            <li>PatternName</li>
+                            <li>Description</li>
+                            <li>CommonPorts</li>
+                            <li>DetectionRule</li>
+                        </ul>
+                    </div>
+
+                    <div class="table-box">
+                        <h4><i class="fas fa-table"></i> IncidentActions</h4>
+                        <ul>
+                            <li class="pk">🔑 ActionID (PK)</li>
+                            <li class="fk">➡️ IncidentID (FK)</li>
+                            <li>Timestamp</li>
+                            <li>Action</li>
+                            <li>PerformedBy</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Queries Tab -->
+        <div id="queries" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-code"></i> Sample Queries</h2>
+
+                <h3><i class="fas fa-search"></i> Basic Incident Retrieval</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Get All Critical Incidents</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-sql">SELECT
+    IncidentID,
+    Timestamp,
+    IncidentType,
+    SourceIP,
+    DestinationIP,
+    Status,
+    AssignedAnalyst
+FROM Incidents
+WHERE Severity = 'CRITICAL'
+ORDER BY Timestamp DESC;</code></pre>
+                </div>
+
+                <h3><i class="fas fa-chart-pie"></i> Incident Statistics by Severity</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Count Incidents by Severity</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-sql">SELECT
+    Severity,
+    COUNT(*) AS IncidentCount,
+    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) AS Percentage
+FROM Incidents
+GROUP BY Severity
+ORDER BY
+    CASE Severity
+        WHEN 'CRITICAL' THEN 1
+        WHEN 'HIGH' THEN 2
+        WHEN 'MEDIUM' THEN 3
+        WHEN 'LOW' THEN 4
+    END;</code></pre>
+                </div>
+
+                <h3><i class="fas fa-user-shield"></i> Analyst Workload Analysis</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Analyst Performance Metrics</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-sql">SELECT
+    A.AnalystName,
+    A.Department,
+    COUNT(I.IncidentID) AS TotalIncidents,
+    SUM(CASE WHEN I.Status = 'Closed' THEN 1 ELSE 0 END) AS ClosedIncidents,
+    SUM(CASE WHEN I.Status IN ('In Progress', 'Investigating') THEN 1 ELSE 0 END) AS ActiveIncidents,
+    ROUND(
+        SUM(CASE WHEN I.Status = 'Closed' THEN 1.0 ELSE 0 END) / COUNT(I.IncidentID) * 100,
+        2
+    ) AS ClosureRate
+FROM Analysts A
+LEFT JOIN Incidents I ON A.AnalystID = I.AssignedAnalyst
+GROUP BY A.AnalystName, A.Department
+ORDER BY TotalIncidents DESC;</code></pre>
+                </div>
+
+                <h3><i class="fas fa-network-wired"></i> Threat Intelligence Correlation</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Match Incidents with Known Threats</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-sql">SELECT
+    I.IncidentID,
+    I.Timestamp,
+    I.IncidentType,
+    I.SourceIP,
+    TI.ThreatLevel,
+    TI.Source AS ThreatSource,
+    TI.FirstSeen AS ThreatFirstSeen
+FROM Incidents I
+INNER JOIN ThreatIntelligence TI
+    ON I.SourceIP = TI.IOC
+WHERE TI.Active = 1
+ORDER BY
+    CASE TI.ThreatLevel
+        WHEN 'CRITICAL' THEN 1
+        WHEN 'HIGH' THEN 2
+        WHEN 'MEDIUM' THEN 3
+        ELSE 4
+    END,
+    I.Timestamp DESC;</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-chart-bar"></i> Analytics Examples</h2>
+
+                <h3><i class="fas fa-calendar-week"></i> Daily Incident Trends</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Incident Volume Over Time</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-sql">SELECT
+    CAST(Timestamp AS DATE) AS IncidentDate,
+    COUNT(*) AS TotalIncidents,
+    SUM(CASE WHEN Severity IN ('CRITICAL', 'HIGH') THEN 1 ELSE 0 END) AS HighSeverityIncidents,
+    SUM(CASE WHEN Status = 'Closed' THEN 1 ELSE 0 END) AS ClosedIncidents
+FROM Incidents
+WHERE Timestamp >= DATEADD(day, -30, GETDATE())
+GROUP BY CAST(Timestamp AS DATE)
+ORDER BY IncidentDate DESC;</code></pre>
+                </div>
+
+                <h3><i class="fas fa-bullseye"></i> Top Attack Types</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Most Common Attack Patterns</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-sql">SELECT
+    IncidentType,
+    COUNT(*) AS Occurrences,
+    AVG(CASE
+        WHEN Severity = 'CRITICAL' THEN 4
+        WHEN Severity = 'HIGH' THEN 3
+        WHEN Severity = 'MEDIUM' THEN 2
+        ELSE 1
+    END) AS AvgSeverityScore
+FROM Incidents
+GROUP BY IncidentType
+ORDER BY Occurrences DESC
+LIMIT 10;</code></pre>
+                </div>
+
+                <h3><i class="fas fa-stopwatch"></i> Incident Response Time</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Mean Time to Resolution (MTTR)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-sql">WITH IncidentTimeline AS (
+    SELECT
+        I.IncidentID,
+        I.Timestamp AS OpenTime,
+        MAX(IA.Timestamp) AS CloseTime,
+        I.Severity
+    FROM Incidents I
+    LEFT JOIN IncidentActions IA ON I.IncidentID = IA.IncidentID
+    WHERE I.Status = 'Closed'
+    GROUP BY I.IncidentID, I.Timestamp, I.Severity
+)
+SELECT
+    Severity,
+    COUNT(*) AS ClosedIncidents,
+    AVG(DATEDIFF(minute, OpenTime, CloseTime)) AS AvgResolutionMinutes,
+    MIN(DATEDIFF(minute, OpenTime, CloseTime)) AS MinResolutionMinutes,
+    MAX(DATEDIFF(minute, OpenTime, CloseTime)) AS MaxResolutionMinutes
+FROM IncidentTimeline
+GROUP BY Severity
+ORDER BY
+    CASE Severity
+        WHEN 'CRITICAL' THEN 1
+        WHEN 'HIGH' THEN 2
+        WHEN 'MEDIUM' THEN 3
+        WHEN 'LOW' THEN 4
+    END;</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Setup Tab -->
+        <div id="setup" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-play"></i> Quick Start</h2>
+                <h3><i class="fas fa-download"></i> Installation</h3>
+                <p>Choose your database platform and follow the installation steps:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">SQL Server</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-bash">sqlcmd -S localhost -d SecurityDB -i demo_setup.sql</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">MySQL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-bash">mysql -u root -p SecurityDB < demo_setup.sql</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">PostgreSQL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-bash">psql -d securitydb -f demo_setup.sql</code></pre>
+                </div>
+
+                <h3><i class="fas fa-rocket"></i> Running Analytics</h3>
+                <p>After loading the demo data, you can run the built-in analytics queries:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Execute Trend Analysis</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code class="language-bash">sqlcmd -S localhost -d SecurityDB -i analytics/trend_analysis.sql</code></pre>
+                </div>
+
+                <div class="btn-group">
+                    <a href="https://github.com/KamilNaz/sql-security-incident-db" class="btn" target="_blank">
+                        <i class="fab fa-github"></i> View on GitHub
+                    </a>
+                    <a href="https://github.com/KamilNaz/sql-security-incident-db#quick-start" class="btn btn-secondary" target="_blank">
+                        <i class="fas fa-book"></i> Full Documentation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Built with ❤️ by <a href="https://kamilnaz.github.io" target="_blank">Kamil Nazaruk</a><br>
+        <a href="https://github.com/KamilNaz/sql-security-incident-db" target="_blank">
+            <i class="fab fa-github"></i> GitHub Repository
+        </a> |
+        <a href="https://kamilnaz.github.io" target="_blank">
+            <i class="fas fa-globe"></i> Portfolio
+        </a>
+    </div>
+
+    <script>
+        // Initialize highlight.js
+        hljs.highlightAll();
+
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+        }
+
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block').querySelector('code');
+            const text = codeBlock.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                button.style.background = '#22c55e';
+
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.style.background = '#38bdf8';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
